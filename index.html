@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Stress</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── SCREEN 1: HOME ── -->
+  <div id="screen-home" class="screen active">
+    <div class="center-content">
+      <div class="logo-icon">♥</div>
+      <h1 class="app-title">Smart Stress</h1>
+      <p class="app-subtitle">Track your daily stress</p>
+
+      <div class="card">
+        <label class="input-label">Stress level (1–10) 1-Lowest 10-Highest </label>
+        <div class="number-input-wrapper">
+          <input id="home-stress-input" type="number" min="1" max="10" value="5" />
+        </div>
+        <button class="btn-primary" onclick="startRoutine()">Start Routine</button>
+      </div>
+
+      <a class="link" onclick="showScreen('screen-progress')">View Progress</a>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2: TODAY'S ROUTINE ── -->
+  <div id="screen-routine" class="screen">
+    <div class="center-content">
+      <h1 class="page-title">Today's Routine</h1>
+      <p class="page-subtitle">Complete each activity</p>
+
+      <div class="card">
+        <div class="activity-item" id="act-breathing" onclick="toggleActivity('act-breathing')">
+          <div class="act-icon breathing">≋</div>
+          <div class="act-info">
+            <span class="act-name">Breathing</span>
+            <span class="act-duration">2 min</span>
+          </div>
+          <div class="act-check" id="check-breathing">✓</div>
+        </div>
+
+        <div class="activity-item" id="act-journaling" onclick="toggleActivity('act-journaling')">
+          <div class="act-icon journaling">📖</div>
+          <div class="act-info">
+            <span class="act-name">Journaling</span>
+            <span class="act-duration">3 min</span>
+          </div>
+          <div class="act-check" id="check-journaling">✓</div>
+        </div>
+
+        <div class="activity-item" id="act-stretching" onclick="toggleActivity('act-stretching')">
+          <div class="act-icon stretching">✦</div>
+          <div class="act-info">
+            <span class="act-name">Stretching</span>
+            <span class="act-duration">3 min</span>
+          </div>
+          <div class="act-check" id="check-stretching">✓</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="completeRoutine()">Complete</button>
+      <a class="link" onclick="showScreen('screen-home')">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 3: MOOD CHECK (after routine) ── -->
+  <div id="screen-mood" class="screen">
+    <div class="center-content">
+      <div class="logo-icon mood-icon">☺</div>
+      <h1 class="page-title">How do you feel today?</h1>
+      <p class="page-subtitle">Rate your current stress level</p>
+
+      <div class="card mood-card">
+        <div class="mood-emoji" id="mood-emoji">🙂</div>
+        <div class="mood-label" id="mood-label">Good</div>
+        <div class="mood-number" id="mood-number">7</div>
+        <input
+          id="mood-slider"
+          type="range"
+          min="1" max="10" value="7"
+          class="slider"
+          oninput="updateMood(this.value)"
+        />
+        <div class="slider-labels">
+          <span>1 (Low)</span>
+          <span>10 (High)</span>
+        </div>
+        <button class="btn-primary" onclick="submitMood()">Submit</button>
+      </div>
+
+      <a class="link" onclick="showScreen('screen-routine')">Back to Routine</a>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 4: PROGRESS ── -->
+  <div id="screen-progress" class="screen">
+    <div class="center-content">
+      <h1 class="page-title">Your Progress</h1>
+      <p class="page-subtitle">Keep up the great work!</p>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-header"><span class="stat-icon">📉</span> Stress Change</div>
+          <div class="stat-value" id="stat-change">–</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><span class="stat-icon">📅</span> Last Activity</div>
+          <div class="stat-value stat-date" id="stat-date">–</div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <h2 class="chart-title">Stress Levels</h2>
+        <div class="level-display">
+          <div class="level-col">
+            <span class="level-label">Before</span>
+            <div class="level-circle before-circle" id="prog-before">–</div>
+          </div>
+          <div class="dash">—</div>
+          <div class="level-col">
+            <span class="level-label">After</span>
+            <div class="level-circle after-circle" id="prog-after">–</div>
+          </div>
+        </div>
+
+        <canvas id="stress-chart" width="340" height="160"></canvas>
+
+        <div class="result-banner" id="result-banner">
+          <span id="result-emoji">🎉</span>
+          <span id="result-text">Complete a session to see your progress!</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="showScreen('screen-home')">Start New Session</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

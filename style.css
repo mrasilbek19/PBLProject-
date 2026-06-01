@@ -1,0 +1,262 @@
+/* ── Variables ── */
+:root {
+  --teal: #2ab3a3;
+  --teal-dark: #1e9e8f;
+  --teal-light: #e0f7f5;
+  --orange: #f47c3c;
+  --bg: #e8f8f6;
+  --white: #ffffff;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --radius: 16px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  color: var(--text);
+}
+
+/* ── Screens ── */
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 60px 20px 40px;
+}
+.screen.active { display: block; }
+
+.center-content {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Logo ── */
+.logo-icon {
+  width: 68px; height: 68px;
+  background: var(--teal);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: white;
+  box-shadow: 0 6px 20px rgba(42,179,163,0.4);
+}
+.mood-icon { font-size: 26px; }
+
+/* ── Titles ── */
+.app-title { font-size: 2rem; font-weight: 800; color: var(--text); }
+.app-subtitle, .page-subtitle { font-size: 0.95rem; color: var(--muted); }
+.page-title { font-size: 1.6rem; font-weight: 700; }
+
+/* ── Card ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Number Input ── */
+.input-label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+
+.number-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--teal);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.number-input-wrapper input {
+  flex: 1;
+  border: none;
+  padding: 14px 16px;
+  font-size: 1.1rem;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+}
+.spinners {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #e5e7eb;
+}
+.spinners button {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: var(--muted);
+  transition: background 0.15s;
+}
+.spinners button:hover { background: var(--teal-light); }
+
+/* ── Primary Button ── */
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+/* ── Link ── */
+.link {
+  color: var(--teal);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.link:hover { opacity: 0.8; }
+
+/* ── Activities ── */
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--teal-light);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+}
+.activity-item.done {
+  border-color: var(--teal);
+  background: var(--teal-light);
+}
+.act-icon {
+  width: 44px; height: 44px;
+  background: var(--teal);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: white; flex-shrink: 0;
+}
+.act-info { display: flex; flex-direction: column; flex: 1; }
+.act-name { font-weight: 600; font-size: 0.95rem; }
+.act-duration { font-size: 0.8rem; color: var(--muted); }
+.act-check {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.activity-item.done .act-check { opacity: 1; }
+
+/* ── Mood slider ── */
+.mood-card { align-items: center; }
+.mood-emoji { font-size: 3rem; }
+.mood-label { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.mood-number { font-size: 1.8rem; font-weight: 800; color: var(--teal); }
+
+.slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--teal) 70%, #e5e7eb 70%);
+  outline: none;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--teal);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--muted);
+  width: 100%;
+}
+
+/* ── Progress Stats ── */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.stat-card {
+  flex: 1;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  box-shadow: var(--shadow);
+}
+.stat-header {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stat-value { font-size: 1.5rem; font-weight: 800; color: var(--text); }
+.stat-date { font-size: 0.95rem; font-weight: 600; margin-top: 2px; }
+
+/* ── Chart card ── */
+.chart-card { gap: 20px; }
+.chart-title { font-size: 1rem; font-weight: 700; text-align: center; }
+
+.level-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.level-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.level-label { font-size: 0.8rem; color: var(--muted); }
+.level-circle {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; font-weight: 800; color: white;
+}
+.before-circle { background: linear-gradient(135deg, #f47c3c, #e84e3d); }
+.after-circle { background: linear-gradient(135deg, #2ab3a3, #1e9e8f); }
+.dash { color: var(--muted); font-size: 1.2rem; margin-top: 24px; }
+
+canvas { width: 100% !important; max-width: 340px; }
+
+/* ── Result Banner ── */
+.result-banner {
+  background: var(--teal-light);
+  border: 1px solid var(--teal);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--teal-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
