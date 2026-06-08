@@ -11,26 +11,38 @@ const state = {
 // ── Activity Lists ──
 const lowStressActivities = [
   { icon: "🎵", name: "Listen to relaxing music", duration: "2 min" },
-  { icon: "✏️", name: "Draw a simple object", duration: "2 min" },
+  { icon: "✏️", name: "Draw a simple object", duration: "3 min" },
   { icon: "💧", name: "Drink water", duration: "1 min" },
   { icon: "🌳", name: "Look outside", duration: "2 min" },
   { icon: "🙆", name: "Shoulder stretch", duration: "2 min" },
-  { icon: "💪", name: "Muscle relaxation", duration: "2 min" },
+];
+
+const mediumStressActivities = [
+  { icon: "🎧", name: "Listen to calm music", duration: "3 min" },
+  { icon: "📖", name: "Read a few pages", duration: "5 min" },
+  { icon: "🌬️", name: "Box breathing", duration: "3 min" },
+  { icon: "🚿", name: "Splash cold water on face", duration: "1 min" },
+  { icon: "🧘", name: "Simple meditation", duration: "4 min" },
 ];
 
 const highStressActivities = [
   { icon: "🫁", name: "Deep breathing", duration: "3 min" },
-  { icon: "🚶", name: "Short walk", duration: "3 min" },
-  { icon: "💧", name: "Drink water", duration: "1 min" },
-  { icon: "📝", name: "Write your worries", duration: "2 min" },
-  { icon: "💪", name: "Muscle relaxation", duration: "2 min" },
-  { icon: "🧘", name: "Mindfulness exercise", duration: "2 min" },
+  { icon: "🚶", name: "Short walk", duration: "5 min" },
+  { icon: "📝", name: "Write your worries", duration: "3 min" },
+  { icon: "💪", name: "Muscle relaxation", duration: "4 min" },
+  { icon: "🧘", name: "Mindfulness exercise", duration: "3 min" },
 ];
 
 function pickActivities(stressLevel) {
-  const pool = stressLevel <= 5 ? lowStressActivities : highStressActivities;
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 3);
+  let pool;
+  if (stressLevel <= 3) {
+    pool = lowStressActivities;
+  } else if (stressLevel <= 7) {
+    pool = mediumStressActivities;
+  } else {
+    pool = highStressActivities;
+  }
+  return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
 }
 
 function renderActivities(activities) {
@@ -128,13 +140,11 @@ function updateStressFeedback(value) {
   value = parseInt(value);
   if (isNaN(value)) return;
   if (value <= 3) {
-    feedback.textContent = "You seem relaxed today 😊";
-  } else if (value <= 5) {
-    feedback.textContent = "Mild stress detected 🌿";
+    feedback.textContent = "You're doing great, low stress today 😊";
   } else if (value <= 7) {
-    feedback.textContent = "Moderate stress detected 😌";
+    feedback.textContent = "Moderate stress — let's work through it 🌿";
   } else {
-    feedback.textContent = "High stress detected 🧘";
+    feedback.textContent = "High stress detected — we've got you 🧘";
   }
 }
 
@@ -154,10 +164,18 @@ function startRoutine() {
   }
   state.beforeStress = val;
 
-  // Generate and render dynamic activities
+  // Update subtitle based on stress tier
+  const subtitle = document.getElementById('routine-subtitle');
+  if (val <= 3) {
+    subtitle.textContent = "Low stress — light activities for you 😊";
+  } else if (val <= 7) {
+    subtitle.textContent = "Moderate stress — balanced routine 🌿";
+  } else {
+    subtitle.textContent = "High stress — calming exercises ahead 🧘";
+  }
+
   const activities = pickActivities(val);
   renderActivities(activities);
-
   showScreen('screen-routine');
 }
 
