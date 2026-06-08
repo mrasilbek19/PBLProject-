@@ -107,9 +107,10 @@ function completeRoutine() {
   const allDone = [...activities].every(a => a.classList.contains('done'));
 
   if (!allDone) {
-    alert('Please complete all activities before continuing! ✅');
+    document.getElementById('routine-warning').style.display = 'block';
     return;
   }
+  document.getElementById('routine-warning').style.display = 'none';
 
   // Reset mood slider to middle
   const slider = document.getElementById('mood-slider');
