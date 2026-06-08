@@ -10,27 +10,27 @@ const state = {
 
 // ── Activity Lists ──
 const lowStressActivities = [
-  { icon: "🎵", name: "Listen to relaxing music", duration: "2 min" },
-  { icon: "✏️", name: "Draw a simple object", duration: "3 min" },
-  { icon: "💧", name: "Drink water", duration: "1 min" },
-  { icon: "🌳", name: "Look outside", duration: "2 min" },
-  { icon: "🙆", name: "Shoulder stretch", duration: "2 min" },
+  { icon: "🎵", name: "Listen to relaxing music", duration: 2 },
+  { icon: "✏️", name: "Draw a simple object", duration: 3 },
+  { icon: "💧", name: "Drink water", duration: 1 },
+  { icon: "🌳", name: "Look outside", duration: 2 },
+  { icon: "🙆", name: "Shoulder stretch", duration: 2 },
 ];
 
 const mediumStressActivities = [
-  { icon: "🎧", name: "Listen to calm music", duration: "3 min" },
-  { icon: "📖", name: "Read a few pages", duration: "5 min" },
-  { icon: "🌬️", name: "Box breathing", duration: "3 min" },
-  { icon: "🚿", name: "Splash cold water on face", duration: "1 min" },
-  { icon: "🧘", name: "Simple meditation", duration: "4 min" },
+  { icon: "🎧", name: "Listen to calm music", duration: 3 },
+  { icon: "📖", name: "Read a few pages", duration: 2 },
+  { icon: "🌬️", name: "Box breathing", duration: 3 },
+  { icon: "🚿", name: "Splash cold water on face", duration: 1 },
+  { icon: "🧘", name: "Simple meditation", duration: 2 },
 ];
 
 const highStressActivities = [
-  { icon: "🫁", name: "Deep breathing", duration: "3 min" },
-  { icon: "🚶", name: "Short walk", duration: "5 min" },
-  { icon: "📝", name: "Write your worries", duration: "3 min" },
-  { icon: "💪", name: "Muscle relaxation", duration: "4 min" },
-  { icon: "🧘", name: "Mindfulness exercise", duration: "3 min" },
+  { icon: "🫁", name: "Deep breathing", duration: 3 },
+  { icon: "🚶", name: "Short walk", duration: 3 },
+  { icon: "📝", name: "Write your worries", duration: 3 },
+  { icon: "💪", name: "Muscle relaxation", duration: 3 },
+  { icon: "🧘", name: "Mindfulness exercise", duration: 3 },
 ];
 
 function pickActivities(stressLevel) {
@@ -49,20 +49,63 @@ function renderActivities(activities) {
   const container = document.getElementById('activities-container');
   container.innerHTML = activities.map((act, i) => {
     const id = 'act-' + i;
+    const totalSeconds = act.duration * 60;
     return `
       <div class="activity-item" id="${id}" onclick="toggleActivity('${id}')">
         <div class="act-icon">${act.icon}</div>
         <div class="act-info">
           <span class="act-name">${act.name}</span>
-          <span class="act-duration">${act.duration}</span>
+          <span class="act-duration">${act.duration} min</span>
+        </div>
+        <div class="act-timer" id="timer-${i}">
+          <span class="timer-display">${act.duration}:00</span>
         </div>
         <div class="act-check">✓</div>
       </div>`;
   }).join('');
+
+  // Start timers
+  activities.forEach((act, i) => {
+    startTimer(i, act.duration * 60);
+  });
 }
+
+function startTimer(index, totalSeconds) {
+  let remaining = totalSeconds;
+  const timerDisplay = document.querySelector(`#timer-${index} .timer-display`);
+
+  if (!timerDisplay) return;
+
+  const interval = setInterval(() => {
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      timerDisplay.textContent = '✓ Done!';
+      document.getElementById(`timer-${index}`).style.color = '#2ab3a3';
+    }
+
+    remaining--;
+  }, 1000);
+}
+
 function triggerExplosion() {
+  const explosions = 3;
+  for (let i = 0; i < explosions; i++) {
+    setTimeout(() => {
+      createExplosionAt(
+        Math.random() * window.innerWidth,
+        Math.random() * window.innerHeight
+      );
+    }, i * 300); // Stagger explosions
+  }
+}
+
+function createExplosionAt(centerX, centerY) {
   const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+  canvas.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;`;
   document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
@@ -70,22 +113,21 @@ function triggerExplosion() {
 
   const particles = [];
   const emojis = ['🌸', '✨', '🎉', '💚', '🌿', '⭐', '🫧', '🎊'];
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
 
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 40; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 4 + Math.random() * 8;
+    const speed = 5 + Math.random() * 10;
     particles.push({
-      x: cx, y: cy,
+      x: centerX,
+      y: centerY,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
-      size: 40 + Math.random() * 30,
+      size: 35 + Math.random() * 35,
       alpha: 1,
       rotation: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.2,
-      gravity: 0.2 + Math.random() * 0.2,
+      rotSpeed: (Math.random() - 0.5) * 0.3,
+      gravity: 0.15 + Math.random() * 0.25,
     });
   }
 
@@ -98,8 +140,8 @@ function triggerExplosion() {
       p.x += p.vx;
       p.y += p.vy;
       p.vy += p.gravity;
-      p.vx *= 0.98;
-      p.alpha -= 0.012;
+      p.vx *= 0.97;
+      p.alpha -= 0.015;
       p.rotation += p.rotSpeed;
       if (p.alpha <= 0) return;
       alive = true;

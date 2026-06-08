@@ -514,3 +514,16 @@ canvas {
     transform: translateY(-100px) rotate(20deg);
   }
 }
+
+.act-timer {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f47c3c;
+  min-width: 55px;
+  text-align: center;
+}
+
+.timer-display {
+  font-family: 'Monaco', 'Courier New', monospace;
+  letter-spacing: 1px;
+}
