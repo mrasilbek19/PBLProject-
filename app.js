@@ -48,13 +48,78 @@ function renderActivities(activities) {
       </div>`;
   }).join('');
 }
+function triggerExplosion() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const emojis = ['🌸', '✨', '🎉', '💚', '🌿', '⭐', '🫧', '🎊'];
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+
+  for (let i = 0; i < 80; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 8;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      emoji: emojis[Math.floor(Math.random() * emojis.length)],
+      size: 16 + Math.random() * 20,
+      alpha: 1,
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.2,
+      gravity: 0.2 + Math.random() * 0.2,
+    });
+  }
+
+  let frame;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.98;
+      p.alpha -= 0.012;
+      p.rotation += p.rotSpeed;
+      if (p.alpha <= 0) return;
+      alive = true;
+
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.font = p.size + 'px serif';
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillText(p.emoji, -p.size / 2, p.size / 2);
+      ctx.restore();
+    });
+
+    if (alive) {
+      frame = requestAnimationFrame(animate);
+    } else {
+      canvas.remove();
+    }
+  }
+  animate();
+}
 
 // ── Screen Navigation ──
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 
-  if (id === 'screen-progress') renderProgress();
+  if (id === 'screen-progress') {
+    renderProgress();
+    triggerExplosion();
+  }
+
 }
 
 // ── Home Screen ──
