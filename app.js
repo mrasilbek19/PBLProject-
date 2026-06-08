@@ -6,6 +6,8 @@ const state = {
   sessions: 0,
   streak: 0,
   lastSessionDate: null,
+  activeTimerIndex: null,
+  timerIntervals: {}, // Track all timer intervals
 };
 
 // ── Activity Lists ──
@@ -49,9 +51,8 @@ function renderActivities(activities) {
   const container = document.getElementById('activities-container');
   container.innerHTML = activities.map((act, i) => {
     const id = 'act-' + i;
-    const totalSeconds = act.duration * 60;
     return `
-      <div class="activity-item" id="${id}" onclick="toggleActivity('${id}')">
+      <div class="activity-item" id="${id}" onclick="toggleActivity('${id}', ${i}, ${act.duration * 60})">
         <div class="act-icon">${act.icon}</div>
         <div class="act-info">
           <span class="act-name">${act.name}</span>
@@ -63,14 +64,43 @@ function renderActivities(activities) {
         <div class="act-check">✓</div>
       </div>`;
   }).join('');
+}
 
-  // Start timers
-  activities.forEach((act, i) => {
-    startTimer(i, act.duration * 60);
+function toggleActivity(id, index, totalSeconds) {
+  const actItem = document.getElementById(id);
+
+  // If clicking an active/done item, toggle it off
+  if (actItem.classList.contains('done')) {
+    actItem.classList.remove('done');
+    // Clear the timer
+    if (state.timerIntervals[index]) {
+      clearInterval(state.timerIntervals[index]);
+      delete state.timerIntervals[index];
+    }
+    state.activeTimerIndex = null;
+    return;
+  }
+
+  // Stop all other timers
+  Object.keys(state.timerIntervals).forEach(timerIndex => {
+    if (parseInt(timerIndex) !== index) {
+      clearInterval(state.timerIntervals[timerIndex]);
+      delete state.timerIntervals[timerIndex];
+    }
   });
+
+  // Start this task's timer
+  state.activeTimerIndex = index;
+  startTimer(index, totalSeconds);
+  actItem.classList.add('done');
 }
 
 function startTimer(index, totalSeconds) {
+  // Clear any existing timer for this index
+  if (state.timerIntervals[index]) {
+    clearInterval(state.timerIntervals[index]);
+  }
+
   let remaining = totalSeconds;
   const timerDisplay = document.querySelector(`#timer-${index} .timer-display`);
 
@@ -83,24 +113,31 @@ function startTimer(index, totalSeconds) {
 
     if (remaining <= 0) {
       clearInterval(interval);
+      delete state.timerIntervals[index];
       timerDisplay.textContent = '✓ Done!';
       document.getElementById(`timer-${index}`).style.color = '#2ab3a3';
+      state.activeTimerIndex = null;
     }
 
     remaining--;
   }, 1000);
+
+  state.timerIntervals[index] = interval;
 }
 
 function triggerExplosion() {
-  const explosions = 3;
-  for (let i = 0; i < explosions; i++) {
+  const corners = [
+    { x: window.innerWidth * 0.1, y: window.innerHeight * 0.1 },      // Top-left
+    { x: window.innerWidth * 0.9, y: window.innerHeight * 0.1 },      // Top-right
+    { x: window.innerWidth * 0.1, y: window.innerHeight * 0.9 },      // Bottom-left
+    { x: window.innerWidth * 0.9, y: window.innerHeight * 0.9 },      // Bottom-right
+  ];
+
+  corners.forEach((corner, i) => {
     setTimeout(() => {
-      createExplosionAt(
-        Math.random() * window.innerWidth,
-        Math.random() * window.innerHeight
-      );
-    }, i * 300); // Stagger explosions
-  }
+      createExplosionAt(corner.x, corner.y);
+    }, i * 200); // Stagger explosions
+  });
 }
 
 function createExplosionAt(centerX, centerY) {
@@ -114,20 +151,20 @@ function createExplosionAt(centerX, centerY) {
   const particles = [];
   const emojis = ['🌸', '✨', '🎉', '💚', '🌿', '⭐', '🫧', '🎊'];
 
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 50; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = 5 + Math.random() * 10;
+    const speed = 6 + Math.random() * 12;
     particles.push({
       x: centerX,
       y: centerY,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
-      size: 35 + Math.random() * 35,
+      size: 30 + Math.random() * 40,
       alpha: 1,
       rotation: Math.random() * Math.PI * 2,
       rotSpeed: (Math.random() - 0.5) * 0.3,
-      gravity: 0.15 + Math.random() * 0.25,
+      gravity: 0.12 + Math.random() * 0.2,
     });
   }
 
@@ -141,7 +178,7 @@ function createExplosionAt(centerX, centerY) {
       p.y += p.vy;
       p.vy += p.gravity;
       p.vx *= 0.97;
-      p.alpha -= 0.015;
+      p.alpha -= 0.012;
       p.rotation += p.rotSpeed;
       if (p.alpha <= 0) return;
       alive = true;
@@ -176,7 +213,6 @@ function showScreen(id) {
     renderProgress();
     triggerExplosion();
   }
-
 }
 
 // ── Home Screen ──
@@ -225,8 +261,33 @@ function startRoutine() {
 }
 
 // ── Routine Screen ──
-function toggleActivity(id) {
-  document.getElementById(id).classList.toggle('done');
+function toggleActivity(id, index, totalSeconds) {
+  const actItem = document.getElementById(id);
+
+  // If clicking an active/done item, toggle it off
+  if (actItem.classList.contains('done')) {
+    actItem.classList.remove('done');
+    // Clear the timer
+    if (state.timerIntervals[index]) {
+      clearInterval(state.timerIntervals[index]);
+      delete state.timerIntervals[index];
+    }
+    state.activeTimerIndex = null;
+    return;
+  }
+
+  // Stop all other timers
+  Object.keys(state.timerIntervals).forEach(timerIndex => {
+    if (parseInt(timerIndex) !== index) {
+      clearInterval(state.timerIntervals[timerIndex]);
+      delete state.timerIntervals[timerIndex];
+    }
+  });
+
+  // Start this task's timer
+  state.activeTimerIndex = index;
+  startTimer(index, totalSeconds);
+  actItem.classList.add('done');
 }
 
 function completeRoutine() {
