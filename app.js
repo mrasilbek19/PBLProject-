@@ -81,7 +81,7 @@ function triggerExplosion() {
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
-      size: 16 + Math.random() * 20,
+      size: 40 + Math.random() * 30,
       alpha: 1,
       rotation: Math.random() * Math.PI * 2,
       rotSpeed: (Math.random() - 0.5) * 0.2,
@@ -106,10 +106,12 @@ function triggerExplosion() {
 
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.alpha);
-      ctx.font = p.size + 'px serif';
+      ctx.font = p.size + 'px Arial';
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rotation);
-      ctx.fillText(p.emoji, -p.size / 2, p.size / 2);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.emoji, 0, 0);
       ctx.restore();
     });
 
@@ -117,6 +119,7 @@ function triggerExplosion() {
       frame = requestAnimationFrame(animate);
     } else {
       canvas.remove();
+      cancelAnimationFrame(frame);
     }
   }
   animate();
@@ -277,7 +280,7 @@ function renderProgress() {
       text.textContent = 'Your stress level stayed the same. Keep it up!';
     } else {
       emoji.textContent = '😊';
-      text.textContent = `Stress increased by ${change} point${change !== 1 ? 's' : ''}. Tomorrow's another chance!`;
+      text.textContent = `Stress increased by ${change} point${change !== 1 ? 's' : ''}. Consider taking a short break, practicing mindfulness, or getting some rest.`;
     }
   } else {
     emoji.textContent = '📊';
