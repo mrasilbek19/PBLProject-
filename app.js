@@ -102,13 +102,21 @@ function toggleActivity(id) {
 }
 
 function completeRoutine() {
+  // Check if all activities are done
+  const activities = document.querySelectorAll('#activities-container .activity-item');
+  const allDone = [...activities].every(a => a.classList.contains('done'));
+
+  if (!allDone) {
+    alert('Please complete all activities before continuing! ✅');
+    return;
+  }
+
   // Reset mood slider to middle
   const slider = document.getElementById('mood-slider');
   slider.value = 5;
   updateMood(5);
   showScreen('screen-mood');
 }
-
 // ── Mood Screen ──
 const moodMap = [
   { max: 2, emoji: '😌', label: 'Very Low' },
