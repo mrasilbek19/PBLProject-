@@ -13,7 +13,7 @@ const state = {
 // ── Activity Lists ──
 const lowStressActivities = [
   { icon: "🎵", name: "Listen to relaxing music", duration: 2 },
-  { icon: "✏️", name: "Draw a simple object", duration: 3 },
+  { icon: "✏️", name: "Draw a simple object", duration: 2 },
   { icon: "💧", name: "Drink water", duration: 1 },
   { icon: "🌳", name: "Look outside", duration: 2 },
   { icon: "🙆", name: "Shoulder stretch", duration: 2 },
@@ -22,13 +22,13 @@ const lowStressActivities = [
 const mediumStressActivities = [
   { icon: "🎧", name: "Listen to calm music", duration: 3 },
   { icon: "📖", name: "Read a few pages", duration: 2 },
-  { icon: "🌬️", name: "Box breathing", duration: 3 },
+  { icon: "🌬️", name: "Deep breathing", duration: 3 },
   { icon: "🚿", name: "Splash cold water on face", duration: 1 },
   { icon: "🧘", name: "Simple meditation", duration: 2 },
 ];
 
 const highStressActivities = [
-  { icon: "🫁", name: "Deep breathing", duration: 3 },
+  { icon: "🫁", name: "Deep breathing", duration: 2 },
   { icon: "🚶", name: "Short walk", duration: 3 },
   { icon: "📝", name: "Write your worries", duration: 3 },
   { icon: "💪", name: "Muscle relaxation", duration: 3 },
@@ -77,19 +77,15 @@ function toggleActivity(id, index, totalSeconds) {
       clearInterval(state.timerIntervals[index]);
       delete state.timerIntervals[index];
     }
+    // Reset timer display
+    const mins = Math.floor(totalSeconds / 60);
+    document.querySelector(`#timer-${index} .timer-display`).textContent = `${mins}:00`;
+    document.getElementById(`timer-${index}`).style.color = '#f47c3c';
     state.activeTimerIndex = null;
     return;
   }
 
-  // Stop all other timers
-  Object.keys(state.timerIntervals).forEach(timerIndex => {
-    if (parseInt(timerIndex) !== index) {
-      clearInterval(state.timerIntervals[timerIndex]);
-      delete state.timerIntervals[timerIndex];
-    }
-  });
-
-  // Start this task's timer
+  // Start this task's timer (no need to check if another is running)
   state.activeTimerIndex = index;
   startTimer(index, totalSeconds);
   actItem.classList.add('done');
@@ -114,7 +110,7 @@ function startTimer(index, totalSeconds) {
     if (remaining <= 0) {
       clearInterval(interval);
       delete state.timerIntervals[index];
-      timerDisplay.textContent = '✓ Done!';
+      timerDisplay.textContent = 'Completed ✓';
       document.getElementById(`timer-${index}`).style.color = '#2ab3a3';
       state.activeTimerIndex = null;
     }
@@ -272,19 +268,15 @@ function toggleActivity(id, index, totalSeconds) {
       clearInterval(state.timerIntervals[index]);
       delete state.timerIntervals[index];
     }
+    // Reset timer display
+    const mins = Math.floor(totalSeconds / 60);
+    document.querySelector(`#timer-${index} .timer-display`).textContent = `${mins}:00`;
+    document.getElementById(`timer-${index}`).style.color = '#f47c3c';
     state.activeTimerIndex = null;
     return;
   }
 
-  // Stop all other timers
-  Object.keys(state.timerIntervals).forEach(timerIndex => {
-    if (parseInt(timerIndex) !== index) {
-      clearInterval(state.timerIntervals[timerIndex]);
-      delete state.timerIntervals[timerIndex];
-    }
-  });
-
-  // Start this task's timer
+  // Start this task's timer (no need to check if another is running)
   state.activeTimerIndex = index;
   startTimer(index, totalSeconds);
   actItem.classList.add('done');
