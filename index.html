@@ -1,25 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Stress</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+
+  <div class="background-elements">
+    <span class="floating">🍃</span>
+    <span class="floating">🫧</span>
+    <span class="floating">🌿</span>
+    <span class="floating">☁️</span>
+    <span class="floating">🎶</span>
+    <span class="floating">🫧</span>
+    <span class="floating">🍃</span>
+    <span class="floating">🫧</span>
+    <span class="floating">☁️</span>
+    <span class="floating">🫧</span>
+    <span class="floating">🚀</span>
+    <span class="floating">🫧</span>
+  </div>
 
   <!-- ── SCREEN 1: HOME ── -->
   <div id="screen-home" class="screen active">
     <div class="center-content">
       <div class="logo-icon">♥</div>
       <h1 class="app-title">Smart Stress</h1>
-      <p class="app-subtitle">Track your daily stress</p>
+      <p class="app-subtitle">Reduce stress one step at a time</p>
 
       <div class="card">
         <label class="input-label">Stress level (1–10) 1-Lowest 10-Highest </label>
         <div class="number-input-wrapper">
-          <input id="home-stress-input" type="number" min="1" max="10" value="5" />
+          <input id="home-stress-input" type="number" min="1" max="10" value="5"
+            oninput="updateStressFeedback(this.value)" />
         </div>
+        <p id="stress-feedback" class="page-subtitle">Enter your stress level to receive a personalized routine.</p>
         <button class="btn-primary" onclick="startRoutine()">Start Routine</button>
       </div>
 
@@ -33,33 +52,8 @@
       <h1 class="page-title">Today's Routine</h1>
       <p class="page-subtitle">Complete each activity</p>
 
-      <div class="card">
-        <div class="activity-item" id="act-breathing" onclick="toggleActivity('act-breathing')">
-          <div class="act-icon breathing">≋</div>
-          <div class="act-info">
-            <span class="act-name">Breathing</span>
-            <span class="act-duration">2 min</span>
-          </div>
-          <div class="act-check" id="check-breathing">✓</div>
-        </div>
-
-        <div class="activity-item" id="act-journaling" onclick="toggleActivity('act-journaling')">
-          <div class="act-icon journaling">📖</div>
-          <div class="act-info">
-            <span class="act-name">Journaling</span>
-            <span class="act-duration">3 min</span>
-          </div>
-          <div class="act-check" id="check-journaling">✓</div>
-        </div>
-
-        <div class="activity-item" id="act-stretching" onclick="toggleActivity('act-stretching')">
-          <div class="act-icon stretching">✦</div>
-          <div class="act-info">
-            <span class="act-name">Stretching</span>
-            <span class="act-duration">3 min</span>
-          </div>
-          <div class="act-check" id="check-stretching">✓</div>
-        </div>
+      <div class="card" id="activities-container">
+        <!-- Activities generated dynamically by JS -->
       </div>
 
       <button class="btn-primary" onclick="completeRoutine()">Complete</button>
@@ -78,13 +72,8 @@
         <div class="mood-emoji" id="mood-emoji">🙂</div>
         <div class="mood-label" id="mood-label">Good</div>
         <div class="mood-number" id="mood-number">7</div>
-        <input
-          id="mood-slider"
-          type="range"
-          min="1" max="10" value="7"
-          class="slider"
-          oninput="updateMood(this.value)"
-        />
+        <input id="mood-slider" type="range" min="1" max="10" value="7" class="slider"
+          oninput="updateMood(this.value)" />
         <div class="slider-labels">
           <span>1 (Low)</span>
           <span>10 (High)</span>
@@ -110,6 +99,17 @@
         <div class="stat-card">
           <div class="stat-header"><span class="stat-icon">📅</span> Last Activity</div>
           <div class="stat-value stat-date" id="stat-date">–</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-header">📊 Sessions</div>
+          <div class="stat-value" id="stat-sessions">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">🔥 Streak</div>
+          <div class="stat-value" id="stat-streak">0</div>
         </div>
       </div>
 
@@ -141,4 +141,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
